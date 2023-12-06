@@ -1,24 +1,26 @@
 'use server';
 
-
+import { revalidatePath } from 'next/cache';
 import { db } from '@/db';
 import { redirect } from 'next/navigation';
-import { type } from 'os';
+ 
 
 export async function editSnippet(id: number, code: string) {
     await db.snippet.update({
         where: { id },
         data: { code }
     })
-
-    redirect(`/snippets/${id}`)
+    revalidatePath(`/snippets/${id}`);
+    redirect(`/snippets/${id}`); 
 }
 
 export async function deleteSnippet(id: number) {
     await db.snippet.delete({
         where: { id },
     })
-    redirect("/")
+
+    revalidatePath('/');
+    redirect("/");
 }
 
 export async function createSnippet(
@@ -58,6 +60,6 @@ export async function createSnippet(
         }
     }
 
-
-    redirect('/')
+    revalidatePath('/');
+    redirect('/');
 }
